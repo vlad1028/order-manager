@@ -57,14 +57,13 @@
 
 ### Запуск проекта
 
-1.  **Склонируйте репозиторий:**
+1.
     ```bash
     git clone <repository-url>
     cd <project-directory>
     ```
 
-2.  **Запустите все сервисы с помощью Docker Compose:**
-    Это команда поднимет все необходимые контейнеры: `order-service`, `postgres`, `kafka`, `redis` и `prometheus`.
+2.
     ```bash
     docker-compose up --build
     ```
@@ -86,7 +85,7 @@
 
 ### CLI (gRPC)
 
-После запуска сервиса вы можете использовать CLI для управления заказами.
+После запуска сервиса можно использовать CLI для управления заказами.
 
 Пример:
 
@@ -101,7 +100,7 @@
 ### HTTP API (Swagger)
 
 Интерактивная документация Swagger UI доступна по адресу:
-[http://localhost:8081/swagger-ui/](http://localhost:8081/swagger-ui/) (порт может отличаться, проверьте `docker-compose.yml`).
+[http://localhost:8081/swagger-ui/](http://localhost:8081/swagger-ui/) (порт может отличаться, см. `docker-compose.yml`).
 
 
 ## Структура проекта
