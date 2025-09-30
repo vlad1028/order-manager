@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package api.order_service.v1;
+
+option go_package = "gitlab.ozon.dev/go/classroom-15/students/homework-1/pkg/order-service;order_service";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/field_behavior.proto";
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+
+// OrderService provides API for managing orders in a pickup point.
+service OrderService {
+  // AcceptOrder accepts an order from a courier.
+  rpc AcceptOrder(AcceptOrderRequest) returns (AcceptOrderResponse) {
+    option (google.api.http) = {
+      post: "/orders/accept"
+      body: "*"
+    };
+  }
+
+  // AcceptReturn accepts a returned order from a client.
+  rpc AcceptReturn(AcceptReturnRequest) returns (AcceptReturnResponse) {
+    option (google.api.http) = {
+      post: "/orders/return"
+      body: "*"
+    };
+  }
+
+  // CancelOrder cancels an order that has not been issued yet.
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse) {
+    option (google.api.http) = {
+      post: "/orders/cancel"
+      body: "*"
+    };
+  }
+
+  // GetOrders returns a list of orders for a specific client.
+  rpc GetOrders(GetOrdersRequest) returns (GetOrdersResponse) {
+    option (google.api.http) = {
+      get: "/orders/get"
+    };
+  }
+
+  // GetReturned returns a paginated list of all returned orders.
+  rpc GetReturned(GetReturnedRequest) returns (GetReturnedResponse) {
+    option (google.api.http) = {
+      get: "/orders/returned"
+    };
+  }
+
+  // IssueOrder issues one or more orders to a client.
+  rpc IssueOrder(IssueOrderRequest) returns (IssueOrderResponse) {
+    option (google.api.http) = {
+      post: "/orders/issue"
+      body: "*"
+    };
+  }
+}
+
+
+// Order represents a single order entity.
+message Order {
+  // Unique identifier of the order.
+  uint64 id = 1;
+  // Identifier of the client who owns the order.
+  uint64 client_id = 2;
+  // Identifier of the pickup point where the order is stored.
+  uint64 pickup_point_id = 3;
+  // Current status of the order.
+  OrderStatus status = 4;
+  // Timestamp of the last status update.
+  google.protobuf.Timestamp status_updated = 5;
+  // Weight of the order in grams.
+  uint32 weight = 6;
+  // Cost of the order in minimal currency units (e.g., kopecks).
+  uint32 cost = 7;
+}
+
+// OrderStatus defines the possible statuses of an order.
+enum OrderStatus {
+  // Unspecified status.
+  ORDER_STATUS_UNSPECIFIED = 0;
+  // Order is stored at the pickup point.
+  ORDER_STATUS_STORED = 1;
+  // Order has been issued to the client.
+  ORDER_STATUS_REACHED_CLIENT = 2;
+  // Order has been returned by the client.
+  ORDER_STATUS_RETURNED = 3;
+  // Order has been canceled.
+  ORDER_STATUS_CANCELED = 4;
+}
+
+// OrderPackaging defines the types of packaging for an order.
+enum OrderPackaging {
+  // Unspecified packaging.
+  ORDER_PACKAGING_UNSPECIFIED = 0;
+  // Box packaging.
+  ORDER_PACKAGING_BOX = 1;
+  // Bag packaging.
+  ORDER_PACKAGING_BAG = 2;
+  // Film packaging.
+  ORDER_PACKAGING_FILM = 3;
+}
+
+// Request message for AcceptOrder RPC.
+message AcceptOrderRequest {
+  // Unique identifier for the new order.
+  uint64 id = 1 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // Identifier of the client who will receive the order.
+  uint64 client_id = 2 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // Weight of the order in grams.
+  uint32 weight = 3 [
+    (validate.rules).uint32.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // Cost of the order in minimal currency units (e.g., kopecks).
+  uint32 cost = 4 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // Type of packaging for the order.
+  optional OrderPackaging packaging = 5 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+  // Whether to add an additional film wrap.
+  bool add_film = 6 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+// Response message for AcceptOrder RPC.
+message AcceptOrderResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+// Request message for AcceptReturn RPC.
+message AcceptReturnRequest {
+  // Identifier of the client returning the order.
+  uint64 client_id = 1 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // Identifier of the order being returned.
+  uint64 order_id = 2 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+// Response message for AcceptReturn RPC.
+message AcceptReturnResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+// Request message for CancelOrder RPC.
+message CancelOrderRequest {
+  // Identifier of the order to cancel.
+  uint64 id = 1 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+// Response message for CancelOrder RPC.
+message CancelOrderResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+// Request message for GetOrders RPC.
+message GetOrdersRequest {
+  // Identifier of the client whose orders are being requested.
+  uint64 client_id = 1 [
+    (validate.rules).uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+  // If true, returns only orders stored at the current pickup point.
+  bool local_only = 2 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+// Response message for GetOrders RPC.
+message GetOrdersResponse {
+  // List of found orders.
+  repeated Order orders = 1;
+}
+
+// Request message for GetReturned RPC.
+message GetReturnedRequest {
+  // Page number for pagination.
+  uint32 page = 1 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+  // Number of items per page.
+  uint32 per_page = 2 [
+    (validate.rules).uint32.gt = 0,
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+// Response message for GetReturned RPC.
+message GetReturnedResponse {
+  // List of returned orders.
+  repeated Order orders = 1;
+}
+
+// Request message for IssueOrder RPC.
+message IssueOrderRequest {
+  // A list of order IDs to be issued to the client.
+  repeated uint64 ids = 1 [
+    (validate.rules).repeated.min_items = 1,
+    (validate.rules).repeated.items.uint64.gt = 0,
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+// Response message for IssueOrder RPC.
+message IssueOrderResponse {
+  // List of successfully issued orders.
+  repeated Order orders = 1;
+}

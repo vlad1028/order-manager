@@ -1,0 +1,446 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "order-service/v1/order_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OrderService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/orders/accept": {
+      "post": {
+        "operationId": "OrderService_AcceptOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AcceptOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AcceptOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/orders/cancel": {
+      "post": {
+        "operationId": "OrderService_CancelOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CancelOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CancelOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/orders/get": {
+      "get": {
+        "operationId": "OrderService_GetOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "localOnly",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/orders/issue": {
+      "post": {
+        "operationId": "OrderService_IssueOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1IssueOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1IssueOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/orders/return": {
+      "post": {
+        "operationId": "OrderService_AcceptReturn",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AcceptReturnResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AcceptReturnRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/orders/returned": {
+      "get": {
+        "operationId": "OrderService_GetReturned",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetReturnedResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AcceptOrderRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cost": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "packaging": {
+          "$ref": "#/definitions/v1OrderPackaging"
+        },
+        "addFilm": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "clientId",
+        "weight",
+        "cost"
+      ]
+    },
+    "v1AcceptOrderResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "v1AcceptReturnRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "orderId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      },
+      "required": [
+        "clientId",
+        "orderId"
+      ]
+    },
+    "v1AcceptReturnResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "v1CancelOrderRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "v1CancelOrderResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "v1GetOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Order"
+          }
+        }
+      }
+    },
+    "v1GetReturnedResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Order"
+          }
+        }
+      }
+    },
+    "v1IssueOrderRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        }
+      },
+      "required": [
+        "ids"
+      ]
+    },
+    "v1IssueOrderResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Order"
+          }
+        }
+      }
+    },
+    "v1Order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "pickupPointId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "status": {
+          "$ref": "#/definitions/v1OrderStatus"
+        },
+        "statusUpdated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cost": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "v1OrderPackaging": {
+      "type": "string",
+      "enum": [
+        "ORDER_PACKAGING_UNSPECIFIED",
+        "ORDER_PACKAGING_BOX",
+        "ORDER_PACKAGING_BAG",
+        "ORDER_PACKAGING_FILM"
+      ],
+      "default": "ORDER_PACKAGING_UNSPECIFIED"
+    },
+    "v1OrderStatus": {
+      "type": "string",
+      "enum": [
+        "ORDER_STATUS_UNSPECIFIED",
+        "ORDER_STATUS_STORED",
+        "ORDER_STATUS_REACHED_CLIENT",
+        "ORDER_STATUS_RETURNED",
+        "ORDER_STATUS_CANCELED"
+      ],
+      "default": "ORDER_STATUS_UNSPECIFIED"
+    }
+  }
+}
